@@ -1,0 +1,89 @@
+# =============================================================================
+# .gitignore for luad-pipeline
+#
+# Zenodo/GitHub archival scope: this repository tracks CODE and OUTPUT CSVs
+# only. All raw data, cached intermediates, figures and manuscript documents
+# are regenerable from the code (see README.md "Data sources" and
+# "Reproducing the pipeline") or are not code/CSV outputs at all, and are
+# excluded on purpose - not by omission.
+# =============================================================================
+
+# ---- All data: raw downloads, cached intermediates, GEO caches ----
+# (data/TCGA_LUAD_*.RData, data/GEO_cache/*, data/met_450k_LUAD.rds, ...)
+data/
+GDCdata/
+
+# ---- Large intermediate RData at repo root (regenerable) ----
+BENCHMARK_ENV.RData
+SESSION_BACKUP.RData
+.RData
+
+# ---- Root-level orphan artefacts (not produced by any current script) ----
+*.rds
+gene_table-*.csv
+MANIFEST.txt
+/14_methylation_7genes.R
+# ^ stray duplicate of R/14_methylation_7genes.R (identical content, same
+#   mtime) sitting at repo root; the R/ copy is the tracked, canonical one.
+
+# ---- Manuscript documents and external reference tables (not code/CSV) ----
+*.docx
+*.xlsx
+
+# ---- Figures: binary, regenerable by R/08_figures.R, R/09_figure10_nup88.R,
+#      R/14_methylation_7genes.R. Only outputs/tables/*.csv is tracked. ----
+outputs/figures/*.tiff
+outputs/figures/*.png
+
+# ---- Earlier exploratory scripts and recovery files (kept locally only) ----
+archive/
+
+# ---- Output CSVs produced only by archive/old_scripts/validate_scoreA_v2.R
+#      (deprecated, not part of the current pipeline) - no tracked script
+#      regenerates these, so they are excluded rather than shipped orphaned ----
+outputs/tables/Benchmark_Cindex_3cohorts.csv
+outputs/tables/ScoreA_external_validation.csv
+outputs/tables/Sensitivity_LMNB1_TCGA.csv
+outputs/tables/Sensitivity_LMNB1_external.csv
+
+# ---- R session and history ----
+.Rhistory
+.Rapp.history
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# ---- R package check artefacts ----
+*.tar.gz
+*.Rcheck/
+
+# ---- Word and Excel lock files ----
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# ---- Claude Code local session directory ----
+.claude/
+
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ---- Windows ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---- Linux ----
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ---- Editor swap files ----
+*.swp
+*.swo
+.vscode/
+.idea/

@@ -1,0 +1,5 @@
+"nup88_probe_set","population","timer3_label","n_GSE72094","rho_GSE72094","p_raw","p_BH","significant_BH","direction_GSE72094","rho_TCGA_TIMER3_reference","n_TCGA_TIMER3","direction_matches_TCGA","purity_adjusted_GSE72094","purity_adjusted_TCGA_TIMER3"
+"NUP88_mean_3probes","aDC","Myeloid dendritic cell activated",442,-0.267,1.27e-08,2.54e-08,TRUE,"negative",-0.192,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Macrophages","Macrophage",442,-0.302,9.22e-11,3.69e-10,TRUE,"negative",-0.183,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Macrophages M1","Macrophage M1",442,-0.212,7.14e-06,9.52e-06,TRUE,"negative",-0.208,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","B-cells","B cell",442,-0.115,0.0153,0.0153,TRUE,"negative",-0.187,516,TRUE,FALSE,TRUE
