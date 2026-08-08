@@ -12,15 +12,38 @@
 # GSE72094_xCell.rds, produced by R/15_gse72094_xcell.R) because no
 # TIMER3.0/deconvolution result exists for it yet.
 #
-# Four populations only (xCell has no Macrophages M0 - that category is
-# specific to CIBERSORT-ABS and was dropped):
-#   aDC             -> TIMER3.0 label "Myeloid dendritic cell activated"
-#                      (confirmed via immunedeconv source, not by intuition:
-#                      inst/extdata/cell_type_mapping.xlsx maps xCell's aDC,
-#                      not cDC or generic DC, to this label)
-#   Macrophages     -> "Macrophage"
-#   Macrophages M1  -> "Macrophage M1"
-#   B-cells         -> "B cell"
+# Fourteen populations: all NUP88/XCELL rows in TCGA with rho < 0, ranked by
+# BH-adjusted p-value (xCell has no Macrophages M0 - that category is
+# specific to CIBERSORT-ABS and was dropped). Every xCell raw score name
+# below was looked up in the immunedeconv mapping table
+# (inst/extdata/cell_type_mapping.xlsx, method_dataset=="xcell"), not
+# assumed from the TIMER3.0 display label - all 14 resolved to exactly one
+# unambiguous xCell score, and all 14 are present in the 67 rows produced
+# by R/15_gse72094_xcell.R:
+#   NKT                          -> "T cell NK"
+#   Class-switched memory B-cells -> "Class-switched memory B cell"
+#   Macrophages M1               -> "Macrophage M1"
+#   aDC                          -> "Myeloid dendritic cell activated"
+#   B-cells                      -> "B cell"
+#   Macrophages                  -> "Macrophage"
+#   CD4+ naive T-cells           -> "T cell CD4+ naive"
+#   Plasma cells                 -> "B cell plasma"
+#   Memory B-cells                -> "B cell memory"
+#   CD8+ T-cells                 -> "T cell CD8+"
+#   CD8+ Tcm                     -> "T cell CD8+ central memory"
+#   Monocytes                    -> "Monocyte"
+#   Macrophages M2               -> "Macrophage M2"
+#   pDC                          -> "Plasmacytoid dendritic cell"
+#
+# NOTE ON REFERENCE VALUES: the TCGA rho/p reference below comes from the
+# local S2 TABLE TIMER3 NUP88 LMBN2.xlsx, which was independently
+# cross-checked against the final manuscript PDF (3/3 spot-checked
+# citations matched exactly) earlier in this project's history. One value
+# in particular, Plasmacytoid dendritic cell, was separately reported as
+# p_BH = 0.0391 from an outside export the user did not ultimately supply
+# for comparison; this file has p_BH = 0.0542 for that row. That specific
+# discrepancy is unresolved and is reproduced as-is (not silently
+# corrected) in the output below.
 #
 # NUP88 has three probes on this platform (merck-BU539430_a_at,
 # merck2-AK225247_at, merck2-BG686994_at). Their pairwise Spearman
@@ -96,9 +119,15 @@ s2 <- read_excel("S2 TABLE TIMER3 NUP88 LMBN2.xlsx", sheet = "S2_correlations")
 s2 <- as.data.frame(s2)
 
 pop_map <- data.frame(
-    xcell_row       = c("aDC", "Macrophages", "Macrophages M1", "B-cells"),
-    timer3_label    = c("Myeloid dendritic cell activated", "Macrophage",
-                        "Macrophage M1", "B cell"),
+    xcell_row    = c("NKT", "Class-switched memory B-cells", "Macrophages M1",
+                     "aDC", "B-cells", "Macrophages", "CD4+ naive T-cells",
+                     "Plasma cells", "Memory B-cells", "CD8+ T-cells",
+                     "CD8+ Tcm", "Monocytes", "Macrophages M2", "pDC"),
+    timer3_label = c("T cell NK", "Class-switched memory B cell", "Macrophage M1",
+                     "Myeloid dendritic cell activated", "B cell", "Macrophage",
+                     "T cell CD4+ naive", "B cell plasma", "B cell memory",
+                     "T cell CD8+", "T cell CD8+ central memory", "Monocyte",
+                     "Macrophage M2", "Plasmacytoid dendritic cell"),
     stringsAsFactors = FALSE
 )
 
@@ -155,13 +184,19 @@ results <- results[, c("nup88_probe_set", "population", "timer3_label",
 results <- results[order(match(results$population, pop_map$xcell_row)), ]
 
 # -----------------------------------------------------------------------------
-# 5. REPLICATION VERDICT (fixed criterion: >=3/4 negative direction,
-#    >=2/4 significant after BH, evaluated on the primary probe-set only)
+# 5. REPLICATION VERDICT
+#
+# Pre-registered criterion for the 14-population panel (fixed by the user
+# before this run, in the request that specified the 14 populations):
+# replicated if >= 8/14 negative direction AND >= 7/14 significant after BH.
+# This supersedes the earlier >=3/>=2 criterion, which was defined for a
+# 4-population panel and is no longer the applicable rule.
 # -----------------------------------------------------------------------------
+n_populations <- nrow(pop_map)
 primary <- results[results$nup88_probe_set == names(nup88_expr)[1], ]
 n_negative    <- sum(primary$direction_GSE72094 == "negative")
 n_significant <- sum(primary$significant_BH)
-replicated    <- n_negative >= 3 & n_significant >= 2
+replicated    <- n_negative >= 8 & n_significant >= 7
 
 # -----------------------------------------------------------------------------
 # 6. WRITE OUTPUT
@@ -175,10 +210,12 @@ message("15: wrote outputs/tables/NUP88_immune_correlation_GSE72094_vs_TIMER3.cs
 cat("\n=== NUP88 vs immune infiltration: GSE72094 (fresh xCell) vs TCGA (TIMER3.0 reference) ===\n")
 print(results, row.names = FALSE)
 
-cat("\n=== Replication verdict (", names(nup88_expr)[1], ", n populations = 4) ===\n", sep = "")
-cat("Negative direction:", n_negative, "/4\n")
-cat("BH-significant:    ", n_significant, "/4\n")
-cat("Replicated (>=3/4 negative AND >=2/4 significant):", replicated, "\n")
+cat("\n=== Replication verdict (", names(nup88_expr)[1], ", n populations = ",
+    n_populations, ") ===\n", sep = "")
+cat("Negative direction:", n_negative, "/", n_populations, "\n", sep = "")
+cat("BH-significant:    ", n_significant, "/", n_populations, "\n", sep = "")
+cat("Pass condition (pre-registered for n=14): >=8 negative AND >=7 significant:",
+    replicated, "\n")
 
 cat("\nNote for Methods/Limitations: GSE72094 correlations are unadjusted\n",
     "Spearman correlations (no tumour-purity estimate available for this\n",

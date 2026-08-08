@@ -1,5 +1,15 @@
 "nup88_probe_set","population","timer3_label","n_GSE72094","rho_GSE72094","p_raw","p_BH","significant_BH","direction_GSE72094","rho_TCGA_TIMER3_reference","n_TCGA_TIMER3","direction_matches_TCGA","purity_adjusted_GSE72094","purity_adjusted_TCGA_TIMER3"
-"NUP88_mean_3probes","aDC","Myeloid dendritic cell activated",442,-0.267,1.27e-08,2.54e-08,TRUE,"negative",-0.192,516,TRUE,FALSE,TRUE
-"NUP88_mean_3probes","Macrophages","Macrophage",442,-0.302,9.22e-11,3.69e-10,TRUE,"negative",-0.183,516,TRUE,FALSE,TRUE
-"NUP88_mean_3probes","Macrophages M1","Macrophage M1",442,-0.212,7.14e-06,9.52e-06,TRUE,"negative",-0.208,516,TRUE,FALSE,TRUE
-"NUP88_mean_3probes","B-cells","B cell",442,-0.115,0.0153,0.0153,TRUE,"negative",-0.187,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","NKT","T cell NK",442,-0.212,6.94e-06,1.67e-05,TRUE,"negative",-0.252,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Class-switched memory B-cells","Class-switched memory B cell",442,-0.129,0.00652,0.0083,TRUE,"negative",-0.209,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Macrophages M1","Macrophage M1",442,-0.212,7.14e-06,1.67e-05,TRUE,"negative",-0.208,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","aDC","Myeloid dendritic cell activated",442,-0.267,1.27e-08,5.93e-08,TRUE,"negative",-0.192,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","B-cells","B cell",442,-0.115,0.0153,0.0178,TRUE,"negative",-0.187,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Macrophages","Macrophage",442,-0.302,9.22e-11,6.45e-10,TRUE,"negative",-0.183,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","CD4+ naive T-cells","T cell CD4+ naive",442,-0.21,8.4e-06,1.68e-05,TRUE,"negative",-0.176,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Plasma cells","B cell plasma",442,-0.077,0.108,0.108,FALSE,"negative",-0.146,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Memory B-cells","B cell memory",442,-0.096,0.0446,0.048,TRUE,"negative",-0.133,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","CD8+ T-cells","T cell CD8+",442,-0.164,0.000553,0.00086,TRUE,"negative",-0.13,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","CD8+ Tcm","T cell CD8+ central memory",442,-0.195,3.75e-05,6.56e-05,TRUE,"negative",-0.12,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Monocytes","Monocyte",442,-0.317,8.91e-12,1.25e-10,TRUE,"negative",-0.118,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","Macrophages M2","Macrophage M2",442,-0.26,3.03e-08,1.06e-07,TRUE,"negative",-0.113,516,TRUE,FALSE,TRUE
+"NUP88_mean_3probes","pDC","Plasmacytoid dendritic cell",442,-0.153,0.00125,0.00175,TRUE,"negative",-0.11,516,TRUE,FALSE,TRUE

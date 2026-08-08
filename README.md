@@ -48,13 +48,12 @@ luad-pipeline/
 │   ├── 05c_incremental_analyses.R       Incremental value, stage I, C-index
 │   ├── 06_external_validation.R         Score A in GSE31210 and GSE50081
 │   ├── 07_immune_analysis.R             Immune marker correlations (TCGA)
-│   ├── 08_figures.R                     Figures 1-9 and S1
-│   ├── 09_figure10_nup88.R              Figure 10 (NUP88 integrated profile)
+│   ├── 08_figures.R                     Manuscript Figures 1, 2, 3, 4, 5, 8, 9, 10, 13, S1 (script's internal figure numbers differ - see "Manuscript outputs at a glance")
+│   ├── 09_figure10_nup88.R              Manuscript Figure 11, NUP88 integrated profile (script's internal name says "Figure10" - see "Manuscript outputs at a glance")
 │   ├── 10_signatures.R                  Definitions of the five benchmarked signatures
 │   ├── 11_benchmark.R                   Cross-signature benchmark on four cohorts
 │   ├── 12_sensitivity_LOO.R             Leave-one-gene-out + nested LRT for NDC1
 │   ├── 13_random_signature_benchmark.R  Score A vs. 1000 random gene panels
-│   ├── 14_methylation_7genes.R          Figure 14, promoter methylation (7 genes)
 │   ├── 15_gse72094_xcell.R              GSE72094 QC + xCell deconvolution
 │   └── 16_nup88_immune_correlation_gse72094.R   NUP88-immune replication in GSE72094
 │
@@ -190,15 +189,13 @@ Output: `outputs/tables/Random_signature_benchmark_detail.csv`, `outputs/tables/
 
 Result: Score A beats random panels only in the TCGA discovery cohort (empirical p = 0.004 on C-index); this does not replicate as statistically significant in the three independent cohorts (empirical p 0.11-0.54), though direction is consistent. See manuscript Discussion for the power-based interpretation.
 
-### Methylation (Figure 14)
+### Methylation (Table S5, Section 3.7) - not a pipeline step
 
-```r
-source("R/14_methylation_7genes.R")
-```
+**Note:** the manuscript's Figure 14 is the cBioPortal OncoPrint of genomic alterations (`R/08_figures.R`/manuscript Section 3.6-3.7, PanCancer Atlas, 566 samples), not methylation. Promoter methylation has no dedicated figure in the manuscript; it is reported as text and in **Supplementary Table S5**.
 
-Requires the TCGA 450k methylation level-3 beta values cached under `GDCdata/` (not tracked - several GB; rebuild with a GDC methylation query via `TCGAbiolinks`, the same tool used in `R/01_download_tcga.R`, but no dedicated download script for this specific query is included in this archive). No random seed required (deterministic Wilcoxon/t-tests).
+**The promoter-methylation values and p-values reported in Table S5 come entirely from the UALCAN web portal** (Chandrashekar et al., 2022; ualcan.path.uab.edu; TCGA-LUAD, 473 primary tumour vs. 32 normal), accessed on **[UALCAN access date - to confirm]**. UALCAN is the sole declared source - see *Data sources* below. The beta values themselves were read manually off UALCAN's boxplots (UALCAN does not expose them as downloadable numbers), with an estimated reading uncertainty of about 0.005 on the beta scale; the beta differences cited in the main text come from that manual reading. Because of this uncertainty, **Table S5 reports only direction (hyper-/hypomethylation) and p-value, not the beta values themselves.**
 
-Output: `outputs/tables/Methylation_7genes_stats.csv`, `outputs/figures/Figure14_methylation_7genes.tiff`.
+A script that recomputed promoter methylation locally from TCGA 450k data as a consistency check against these UALCAN values (`14_methylation_7genes.R`) has been moved to `archive/old_scripts/` (gitignored, not part of this repository) - it never reproduced UALCAN's probe selection/direction for all seven genes and was not retained as a source of any published number. It is not part of the reproduction instructions below.
 
 ### NUP88-immune correlation, replicated in GSE72094
 
@@ -230,9 +227,11 @@ All data analysed in this study are publicly available.
 | GSE50081 | NCBI GEO, Der et al. (2014) | `R/11`, `R/12` | `data/GEO_cache/GSE50081_eset.rds` |
 | GSE72094 | NCBI GEO (442-patient lung adenocarcinoma cohort; consult the GEO record for the associated publication) | `R/15`, `R/16` | `data/GEO_cache/GSE72094_eset.rds` |
 | TIMER3.0 | Cui et al. (2025), web portal, purity-adjusted partial Spearman correlations | `R/07`, `R/16` (reference only) | `S2 TABLE TIMER3 NUP88 LMBN2.xlsx` (not tracked - see *Distribution notes*) |
-| Human Protein Atlas, cBioPortal (PanCancer Atlas LUAD), UALCAN, KM-Plotter | web portals, no programmatic download | manuscript cross-checks | - |
+| **UALCAN** | Chandrashekar et al. (2022), web portal (ualcan.path.uab.edu), TCGA-LUAD, 473 tumour / 32 normal. **Sole declared source for the promoter-methylation values and p-values in Supplementary Table S5** (manually read off the portal's boxplots and interface, not programmatically downloaded - see the *Methylation* note above). Accessed **[UALCAN access date - to confirm]**. | manuscript Section 3.7, Table S5 | - (values hard-coded in the archived consistency-check script, see below) |
+| **KM-Plotter** | Gyorffy B. (2024), *The Innovation* 5(3):100625, web portal (kmplot.com), OS, JetSet best probe, adenocarcinoma histology, univariate Cox. **Sole declared source for the individual-gene external validation in Table 5.** Accessed **8 August 2026**. | manuscript Section 3.4, Table 5 | `data/kmplotter_permanent_links.txt` (settings, values and permanent `pa_id` links for LMNB2, TMPO, NDC1, LBR) |
+| Human Protein Atlas, cBioPortal (PanCancer Atlas LUAD) | web portals, no programmatic download | manuscript cross-checks | - |
 
-The TCGA methylation level-3 beta values used by `R/14` (`GDCdata/`) are excluded from this repository because of size; re-querying via `TCGAbiolinks` will rebuild what is needed.
+A local recomputation of promoter methylation from TCGA 450k beta values (`GDCdata/`, excluded from this repository because of size) was run as a consistency check against the UALCAN values above; it is not part of this repository's pipeline (see the *Methylation* note above - the script now lives in `archive/old_scripts/`, gitignored). `data/met_450k_LUAD.rds`, an untracked interactive `GDCprepare()` cache kept to avoid recomputation, was removed from the working copy - it was never written by a script and fed into no published number.
 
 ---
 
@@ -266,38 +265,61 @@ Caveat: reproducing exact values requires running each script in full, from the 
 
 Only `R/*.R` and `outputs/tables/*.csv` are version-controlled (see `.gitignore`). Excluded, and why:
 
-- **`data/`, `GDCdata/`** - raw and cached data (TCGA RangedSummarizedExperiment, DESeq2 results, GEO ExpressionSets, 450k methylation betas). Several hundred MB to multiple GB; fully regenerable from the public accessions above via `R/01`, `R/15`, or the manual GDC methylation query used for `R/14`.
+- **`data/`, `GDCdata/`** - raw and cached data (TCGA RangedSummarizedExperiment, DESeq2 results, GEO ExpressionSets, 450k methylation betas). Several hundred MB to multiple GB; fully regenerable from the public accessions above via `R/01`, `R/15`, or the manual GDC methylation query used by the archived methylation consistency-check script.
 - **`BENCHMARK_ENV.RData` (~210 MB), `SESSION_BACKUP.RData` (~410 MB), `.RData`** - working snapshots/caches, regenerable, not required for reproduction.
 - **`*.rds` at repository root (`df.rds`, `results.rds`), `gene_table-*.csv`** - orphaned artefacts not referenced by any current script; excluded rather than deleted.
-- **`outputs/figures/*.tiff`, `*.png`** - binary, regenerable by `R/08`, `R/09`, `R/14`.
+- **`outputs/figures/*.tiff`, `*.png`** - binary, regenerable by `R/08`, `R/09`.
 - **`*.docx`, `*.xlsx`** - manuscript drafts and the TIMER3.0 reference table (`S2 TABLE TIMER3 NUP88 LMBN2.xlsx`). Not code, not a pipeline-generated CSV, per this archive's scope. If you want the TIMER3.0 reference table bundled with the Zenodo deposit for readers who don't have the manuscript, add it back explicitly (`git add -f "S2 TABLE TIMER3 NUP88 LMBN2.xlsx"`) - it is small (24 KB).
-- **`archive/`** - superseded drafts and one broken duplicate script, kept locally for the author's own traceability only.
+- **`archive/`** - superseded drafts and old/superseded scripts (including the methylation consistency-check script, not retained as a source of published numbers), kept locally for the author's own traceability only.
 
 ---
 
 ## Manuscript outputs at a glance
 
-| Output | Produced by | Used in |
+Rebuilt from the final manuscript PDF's actual figure/table numbering (`1 final.pdf`), not from script filenames - several scripts use an older internal numbering left over from before a revision reordered and added figures (e.g. `08_figures.R` internally calls the co-expression network `"Figure4_..."` and the ROC curves `"Figure6_..."`; both are correct in content, just numbered differently inside the script than in the manuscript). Where a script's own output filename disagrees with the manuscript number, the script's internal name is given in parentheses so you can locate the code. **Bold** rows have no producing script in `R/` - either genuinely external, or genuinely missing.
+
+### Figures
+
+| Manuscript figure | Produced by | Used in |
 |---|---|---|
-| Figure 1 (volcano) | `08_figures.R` | Section 3.1 |
-| Figure 2 (heatmap, 20 genes) | `08_figures.R` | Section 3.1 |
-| Figure 3 (GO BP, CC) | `08_figures.R` | Section 3.1 |
-| Figure 4 (Kaplan-Meier, four genes, n=394) | `08_figures.R` | Section 3.3 |
-| Figure 5 (Kaplan-Meier, Score A, n=394) | `08_figures.R` | Section 3.3 |
-| Figure 6 (Kaplan-Meier, Score A, stage I) | `08_figures.R` | Section 3.3 |
-| Figure 7 (external validation) | `08_figures.R` | Section 3.4 |
-| Figure 8 (ROC, tumour vs normal) | `08_figures.R` | Section 3.4 |
-| Figure 9 (co-expression network) | `08_figures.R` | Section 3.5 |
-| Figure 10 (NUP88 integrated profile) | `09_figure10_nup88.R` | Sections 3.5-3.6 |
-| Figure 14 (promoter methylation, 7 genes) | `14_methylation_7genes.R` | Section 3.7 |
-| Figure S1 (Ki-67 correlation) | `08_figures.R` | Section 3.5 |
-| Table 1 (clinical characteristics, n=394) | `05b_table1_clinical.R` | Section 3.2 |
-| Table 2 (univariate Cox) | `05_survival_cox.R` | Section 3.2 |
-| Table 3 (multivariate Cox) | `05_survival_cox.R` | Section 3.2 |
-| Table 4 (Score A summary) | `05_survival_cox.R` | Section 3.3 |
-| Table 6 (cross-signature benchmark) | `11_benchmark.R` | Section 3.9 |
+| Figure 1 (volcano) | `08_figures.R` (`Figure1_Volcano_Plot`) | Section 3.1 |
+| Figure 2 (heatmap, 20 genes) | `08_figures.R` (`Figure2_Heatmap_20genes`) | Section 3.1 |
+| Figure 3 (GO BP, CC) | `08_figures.R` (`Figure3A_GO_BP`, `Figure3B_GO_CC`) | Section 3.1 |
+| Figure 4 (Kaplan-Meier, four genes, n=394) | `08_figures.R` (internal name `Figure5_KaplanMeier_n394`) | Section 3.3 |
+| Figure 5 (Kaplan-Meier, Score A, n=394) | `08_figures.R` (internal name `Figure_KM_ScoreA_n394`) | Section 3.3 |
+| Figure 6 (Kaplan-Meier, Score A, stage I) | `05c_incremental_analyses.R` (`ScoreA_StageI_KM`) | Section 3.3 |
+| **Figure 7 (external validation, GSE31210 + GSE50081)** | **not found** - `06_external_validation.R` computes the underlying statistics (`External_validation_GEO.csv`) but contains no plotting code; no script writes a Figure 7 image anywhere in `R/` | Section 3.4 |
+| Figure 8 (ROC, tumour vs normal) | `08_figures.R` (internal name `Figure6_ROC_Curves`) | Section 3.4 |
+| Figure 9 (co-expression network) | `08_figures.R` (internal name `Figure4_Correlation_Matrix`) | Section 3.5 |
+| Figure 10 (correlation with tumour stage) | `08_figures.R` (internal name `Figure7_Expression_by_Stage_n394`) | Section 3.5-3.6 |
+| Figure 11 (NUP88 integrated profile) | `09_figure10_nup88.R` (internal name `Figure10_NUP88_GoldenTriangle`) | Sections 3.5-3.6 |
+| **Figure 12 (NUP88/LMNB2 immune infiltration, TIMER3.0)** | **not found** - purity-adjusted partial Spearman values come from the external TIMER3.0 reference (`S2 TABLE TIMER3 NUP88 LMBN2.xlsx`, see *Data sources*); no script renders this figure | Section 3.6 |
+| Figure 13 (PD-L1/CD274 correlation) | `08_figures.R` (internal name `Figure9_PDL1_Scatterplots`) | Section 3.6 |
+| **Figure 14 (OncoPrint, genomic alterations)** | **external** - cBioPortal web portal, PanCancer Atlas, 566 samples; not regenerated by any script | Section 3.6-3.7 |
+| Figure S1 (Ki-67 correlation) | `08_figures.R` (`FigureS1_Ki67_Correlation`) | Section 3.5 |
+
+**Orphan pipeline output, not in the manuscript:** `08_figures.R` also renders `"Figure8_Immune_Correlation"` (a 9-gene x 18-marker local Spearman correlation heatmap, fed by `07_immune_analysis.R`'s `cor_immune`). Its own header comment still says "feeds Figure 8" - that was true before the revision that replaced it with the TIMER3.0-based, purity-adjusted Figure 12 above (2 genes only, partial correlation). This local heatmap does not correspond to any figure in the final manuscript; it is still generated by `08_figures.R` and written to `outputs/figures/` on every run, but nothing in the manuscript cites it.
+
+### Tables
+
+| Manuscript table | Produced by | Used in |
+|---|---|---|
+| Table 1 (clinical characteristics, n=394) | `05b_table1_clinical.R` (`Table1_Clinical.csv`) | Section 3.2 |
+| Table 2 (univariate Cox) | `05_survival_cox.R` (`Cox_univarie_n394.csv`) | Section 3.2 |
+| Table 3 (multivariate Cox) | `05_survival_cox.R` (`Cox_multivarie_n394.csv`) | Section 3.2 |
+| Table 4 (Score A summary, 5-yr OS) | `05_survival_cox.R` (internal name `Comparison_Individual_vs_Signature.csv`) | Section 3.3 |
+| Table 5 (external validation, KM-Plotter) | external (KM-Plotter) - `data/kmplotter_permanent_links.txt` (settings, values, permanent `pa_id` links) | Section 3.4 |
+| Table 6 (cross-signature benchmark) | `11_benchmark.R` (internal name `Benchmark_main_3cohorts.csv`) | Section 3.9 |
+| Supplementary Table S1 (benchmark, full TCGA cohort) | `11_benchmark.R` (internal name `Benchmark_suppl_TCGAfull.csv`) | Section 3.9 |
 | Supplementary Table S2 (TIMER3.0, NUP88 and LMNB2) | external (TIMER3.0) | Section 3.6 |
-| Supplementary Table S3 (leave-one-gene-out, NDC1 LRT) | `12_sensitivity_LOO.R` | Section 3.9 |
+| Supplementary Table S3 (leave-one-gene-out) | `12_sensitivity_LOO.R` (`Supplementary_Table_S3_LOO.csv`) | Section 3.9 |
+| **Supplementary Table S4 (4- vs 5-gene score, LMNB1 sensitivity)** | **not found** - no script in `R/` computes the 4-gene-vs-5-gene (+LMNB1) HR/C-index/AUC comparison reported in this table | Discussion |
+| Supplementary Table S5 (promoter methylation, direction + p-value only) | external (UALCAN, manually transcribed - see *Methylation* note above) | Section 3.7 |
+
+**Pipeline outputs that support the text but aren't a numbered table:** `05_survival_cox.R` also writes `Schoenfeld_results.csv` (proportional-hazards check, cited in Methods prose, no table number) and `05c_incremental_analyses.R` writes `Incremental_analyses_summary.csv` (LR test / C-index gain from adding Score A to the clinical model, supports Section 3.3 narrative, no table number).
+
+| Other output | Produced by | Used in |
+|---|---|---|
 | Random-signature permutation benchmark | `13_random_signature_benchmark.R` | Discussion (revision) |
 | NUP88-immune correlation, GSE72094 replication | `15_gse72094_xcell.R`, `16_nup88_immune_correlation_gse72094.R` | Results (revision) |
 
