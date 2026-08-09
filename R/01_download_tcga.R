@@ -10,9 +10,17 @@
 #   normal_idx   : column indices of the adjacent-normal samples (~59)
 #   sample_type  : raw TCGA sample-type label for every column
 #
-# This is the slow, network-bound step (several hundred MB from the GDC).
+# This is the slow, network-bound step (~2.5 GB from the GDC, 601 files).
 # It is cached: if TCGA_LUAD_data.RData already exists the script exits early.
 # Delete the file to force a fresh download.
+#
+# Known issue: GDCdownload() can fail mid-extraction with
+#   "tar: Error exit delayed from previous errors." /
+#   "Erreur dans if (ret == 1) break : l'argument est de longueur nulle"
+# on some configurations (observed with macOS bsdtar + TCGAbiolinks 2.40.0).
+# See README.md, "Reproducing the main pipeline", for the diagnosis, what was
+# ruled out, and a verified workaround for downstream scripts that only need
+# gene_symbols/gene_type annotation rather than the raw count matrix.
 # =============================================================================
 
 if (!exists("RDATA")) source("R/00_setup.R")

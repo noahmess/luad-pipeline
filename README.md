@@ -121,6 +121,29 @@ remotes::install_github("dviraran/xCell", upgrade = "never")
 
 The full pipeline from raw TCGA download to figures runs in roughly 30 to 60 minutes depending on the network and on whether the TCGA data has already been cached.
 
+**Known issue: `R/01_download_tcga.R` can fail during extraction.** `GDCdownload()` fetches the STAR-Counts query (601 files, ~2.5 GB - larger than the "several hundred MB" the script's own header suggests) in chunked tar archives and extracts each with R's `untar()`. On at least one tested configuration (macOS, system `tar` = `bsdtar` 3.5.3/libarchive, TCGAbiolinks 2.40.0) this reproducibly failed on every attempt, always partway through chunk extraction, with:
+
+```
+tar: Error exit delayed from previous errors.
+Erreur dans if (ret == 1) break : l'argument est de longueur nulle
+```
+
+Reading TCGAbiolinks' source (`GDCdownload.aux`, `GDCdownload.by.chunk`) shows `untar()`'s exit status isn't propagated cleanly when the underlying `tar` reports this kind of non-fatal, delayed error (a known `bsdtar` behaviour on macOS for archives containing entries it partially can't restore) - `GDCdownload.by.chunk`'s retry loop ends up comparing `NULL` instead of a real return code, and the whole download aborts instead of retrying or failing with the library's own (fairly informative) intended error message. Two things this rules out, and one that could plausibly help but is untested here:
+
+- `GDCdownload(query, method = "client")` uses the external `gdc-client` binary instead of R's `untar()`, which would sidestep this specific bug - but `gdc-client` is a separate program that has to be installed and on `PATH`; it is not part of this project's R dependencies and wasn't available where this was tested.
+- Leftover partial downloads from a failed attempt land as numbered `.tar.gz` files and per-file UUID directories **at the repository root** (`GDCdownload`'s default working directory when a chunk fails before cleanup), not inside `GDCdata/` - delete those manually if a download attempt is interrupted.
+- Passing a smaller `files.per.chunk` to `GDCdownload()` would produce smaller tar archives per extraction and might avoid whatever triggers the delayed `tar` error - plausible, but not verified: testing it requires re-attempting the full ~2.5 GB download, which wasn't safe to do again in the disk conditions this was investigated under.
+
+**Workaround that is verified to work**, for anything downstream that only needs `data/TCGA_LUAD_data.RData` for its gene-symbol/biotype annotation (`gene_symbols`, or `rowData(data)$gene_name` / `$gene_type`) rather than the raw count matrix itself - `R/11_benchmark.R` and `R/13_random_signature_benchmark.R` are exactly this case, since the actual counts they use come from `norm_tumor` in `data/TCGA_LUAD_cohort.RData`, cached separately by `R/04`. If `data/TCGA_LUAD_DEG_results.RData` already exists (produced by `R/02_differential_expression.R`), it carries the same annotation as a `gene_info` object (`DFrame`, 60660 rows, `gene_name` and `gene_type` columns, GENCODE-derived) that can stand in for `data/TCGA_LUAD_data.RData` without re-running `R/01`:
+
+```r
+load("data/TCGA_LUAD_DEG_results.RData")   # gene_info, gene_symbols
+data <- SummarizedExperiment::SummarizedExperiment(rowData = gene_info)
+save(data, file = "data/TCGA_LUAD_data.RData")
+```
+
+This was cross-checked against the real thing: `gene_info$gene_name` is identical to the `gene_symbols` vector `R/01` itself produces (60660/60660 match), and re-running `R/11` and `R/13` with this substitute reproduced the existing `Random_signature_benchmark_detail.csv` / `_summary.csv` byte-for-byte (identical MD5). It does not help scripts that need the actual count matrix from `data` (`R/01`-`R/03`, `R/08`) - those still need a real download.
+
 ```r
 setwd("~/Desktop/luad-pipeline")
 source("run_all.R")

@@ -39,6 +39,7 @@ suppressPackageStartupMessages({
     library(timeROC)
     library(GEOquery)
     library(Biobase)
+    library(SummarizedExperiment)
 })
 
 source("R/00_setup.R")
