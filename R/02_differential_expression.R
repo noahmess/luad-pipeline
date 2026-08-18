@@ -46,7 +46,12 @@ if (file.exists(RDATA$deg)) {
                                 colData   = coldata,
                                 design    = ~ condition)
 
-  # Collapse to gene symbols: keep the 20 NE genes (first matching row each).
+  # Map rownames to gene symbols and record the row indices of the 20 NE-panel
+  # genes. NOTE: dds still holds the FULL transcriptome here - no panel
+  # subsetting is done before fitting. DESeq() below estimates size factors and
+  # dispersions on all 60660 genes; the 20 panel rows are EXTRACTED only
+  # afterwards (results_deg[ne_rows, ]), so their log2FC and padj reflect
+  # whole-transcriptome normalisation.
   rownames(dds) <- make.unique(gene_symbols)
   ne_rows <- match(NE_GENES_20, gene_symbols)        # one Ensembl row per symbol
   stopifnot(!anyNA(ne_rows))
