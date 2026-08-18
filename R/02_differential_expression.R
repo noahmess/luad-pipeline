@@ -1,14 +1,28 @@
 # =============================================================================
 # 02_differential_expression.R
-# Differential expression between tumour and adjacent-normal tissue with DESeq2,
-# restricted to the 20 nuclear-envelope genes selected a priori.
+# Differential expression between tumour and adjacent-normal tissue with DESeq2.
 #
-# Cohort: all tumour + normal samples (the "n = 540" expression side; DESeq2
-# itself uses every tumour and every normal column - no survival filtering).
+# CANONICAL SPECIFICATION (transcriptome-wide):
+#   - Input          : TCGA-LUAD STAR-Counts, assay "unstranded" (raw integer
+#                      counts), 60660 genes x 601 samples.
+#   - Samples        : 540 Primary Tumour + 59 Solid Tissue Normal = 599.
+#                      The 2 Recurrent Tumour samples are excluded.
+#   - Pre-filtering  : none applied by hand; DESeq2's default independent
+#                      filtering is used when computing padj.
+#   - Design         : ~ condition   (factor levels Normal, Tumor).
+#   - Contrast       : Tumor vs Normal.
+#   - Size factors   : median-of-ratios, estimated on the FULL transcriptome
+#                      (all 60660 genes), NOT on the 20-gene panel.
+#   - log2FC         : maximum-likelihood estimate (MLE), NO lfcShrink.
+#   - padj           : Benjamini-Hochberg across all tested genes.
+#   - DESeq2 1.52.0, R 4.6.0 (see outputs/sessionInfo.txt).
+#   The 20 nuclear-envelope panel genes are EXTRACTED from the full-transcriptome
+#   result AFTER fitting, so their fold-changes and padj reflect whole-genome
+#   normalisation. This is the standard DESeq2 specification.
 #
-# Output: data/TCGA_LUAD_DEG_results.RData containing
-#   results_deg : full DESeqResults object
-#   results_df  : data.frame of the 20 NE genes (log2FoldChange, padj, gene, ...)
+# Outputs:
+#   data/TCGA_LUAD_DEG_results.RData      (results_deg, results_df)
+#   outputs/tables/Differential_expression_transcriptomewide.csv  (20-gene table)
 # =============================================================================
 
 if (!exists("RDATA")) source("R/00_setup.R")
@@ -47,7 +61,17 @@ if (file.exists(RDATA$deg)) {
   results_df <- results_df[order(results_df$padj), ]
 
   save(results_deg, results_df, file = RDATA$deg)
+
+  # CSV export (canonical transcriptome-wide differential-expression table)
+  csv_cols <- c("gene", "baseMean", "log2FoldChange", "lfcSE", "stat",
+                "pvalue", "padj")
+  write.csv(results_df[, csv_cols],
+            file.path(PATHS$tables,
+                      "Differential_expression_transcriptomewide.csv"),
+            row.names = FALSE)
+
   message("02: ", sum(results_df$padj < 0.05, na.rm = TRUE),
-          "/20 genes differentially expressed (padj < 0.05). Saved ",
-          basename(RDATA$deg))
+          "/20 genes differentially expressed (padj < 0.05, transcriptome-wide). ",
+          "Saved ", basename(RDATA$deg),
+          " and outputs/tables/Differential_expression_transcriptomewide.csv")
 }
