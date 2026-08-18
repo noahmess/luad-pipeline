@@ -62,7 +62,18 @@
 #   outputs/tables/NUP88_immune_correlation_GSE72094_vs_TIMER3.csv
 # =============================================================================
 
-setwd("~/Desktop/luad-pipeline")
+# Locate the project root automatically (the folder that contains R/), instead
+# of a hard-coded path. Mirrors R/00_setup.R's PROJECT_ROOT logic.
+if (!exists("PROJECT_ROOT")) {
+  .args <- commandArgs(FALSE)
+  .file <- sub("^--file=", "", .args[grep("^--file=", .args)])
+  .self <- if (length(.file)) .file
+           else if (!is.null(sys.frames()[[1]]$ofile)) sys.frames()[[1]]$ofile
+           else NA_character_
+  PROJECT_ROOT <- if (!is.na(.self)) normalizePath(file.path(dirname(.self), ".."))
+                  else getwd()
+}
+setwd(PROJECT_ROOT)
 
 suppressPackageStartupMessages({
     library(Biobase)

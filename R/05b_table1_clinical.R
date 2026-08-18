@@ -6,7 +6,7 @@
 #   age_v, sex_v, stage_v, time_v, status_v  (all length 394)
 #
 # Run after the pipeline:
-#   source("/Users/nouha/Desktop/luad-pipeline/table1_clinical.R")
+#   source("R/05b_table1_clinical.R")   # run from the project root
 # =============================================================================
 
 suppressPackageStartupMessages(library(survival))

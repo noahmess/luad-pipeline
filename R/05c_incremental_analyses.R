@@ -8,7 +8,7 @@
 # Requires pipeline objects in memory:
 #   age_v, sex_v, stage_v, time_v, status_v, expr4_v (all length 394)
 #
-# Run:  source("/Users/nouha/Desktop/luad-pipeline/incremental_analyses.R")
+# Run:  source("R/05c_incremental_analyses.R")   # from the project root
 # =============================================================================
 
 suppressPackageStartupMessages({
