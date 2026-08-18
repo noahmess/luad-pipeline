@@ -1,0 +1,11 @@
+metric,value
+n_DEG_input,16
+number_of_nodes,16
+number_of_edges,71
+average_node_degree,8.88
+local_clustering_coefficient,0.781
+expected_number_of_edges,2
+ppi_enrichment_pvalue,<1e-16
+confidence_threshold,0.4 (medium, STRING default)
+species,9606 (Homo sapiens)
+source,STRING v12 REST API (string-db.org/api/tsv/ppi_enrichment)
