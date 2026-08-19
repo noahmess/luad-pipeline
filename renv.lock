@@ -1,0 +1,163 @@
+{
+  "R": {
+    "Version": "4.6.0",
+    "Repositories": [
+      { "Name": "CRAN", "URL": "https://cloud.r-project.org" },
+      { "Name": "BioCsoft", "URL": "https://bioconductor.org/packages/3.23/bioc" }
+    ]
+  },
+  "Bioconductor": { "Version": "3.23" },
+  "Packages": {
+    "DESeq2": {
+      "Package": "DESeq2",
+      "Version": "1.52.0",
+      "Source": "Bioconductor"
+    },
+    "clusterProfiler": {
+      "Package": "clusterProfiler",
+      "Version": "4.20.0",
+      "Source": "Bioconductor"
+    },
+    "org.Hs.eg.db": {
+      "Package": "org.Hs.eg.db",
+      "Version": "3.23.1",
+      "Source": "Bioconductor"
+    },
+    "TCGAbiolinks": {
+      "Package": "TCGAbiolinks",
+      "Version": "2.40.0",
+      "Source": "Bioconductor"
+    },
+    "GEOquery": {
+      "Package": "GEOquery",
+      "Version": "2.80.0",
+      "Source": "Bioconductor"
+    },
+    "Biobase": {
+      "Package": "Biobase",
+      "Version": "2.72.0",
+      "Source": "Bioconductor"
+    },
+    "SummarizedExperiment": {
+      "Package": "SummarizedExperiment",
+      "Version": "1.42.0",
+      "Source": "Bioconductor"
+    },
+    "GSVA": {
+      "Package": "GSVA",
+      "Version": "2.6.6",
+      "Source": "Bioconductor"
+    },
+    "enrichplot": {
+      "Package": "enrichplot",
+      "Version": "1.32.0",
+      "Source": "Bioconductor"
+    },
+    "survival": {
+      "Package": "survival",
+      "Version": "3.8.6",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "glmnet": {
+      "Package": "glmnet",
+      "Version": "4.1.10",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "timeROC": {
+      "Package": "timeROC",
+      "Version": "0.4.1",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "ggplot2": {
+      "Package": "ggplot2",
+      "Version": "4.0.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "ggrepel": {
+      "Package": "ggrepel",
+      "Version": "0.9.8",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "ggpubr": {
+      "Package": "ggpubr",
+      "Version": "0.6.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "survminer": {
+      "Package": "survminer",
+      "Version": "0.5.2",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "pROC": {
+      "Package": "pROC",
+      "Version": "1.19.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "RColorBrewer": {
+      "Package": "RColorBrewer",
+      "Version": "1.1.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "pheatmap": {
+      "Package": "pheatmap",
+      "Version": "1.0.13",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "cowplot": {
+      "Package": "cowplot",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "patchwork": {
+      "Package": "patchwork",
+      "Version": "1.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "dplyr": {
+      "Package": "dplyr",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "1.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "readxl": {
+      "Package": "readxl",
+      "Version": "1.4.5",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "corrplot": {
+      "Package": "corrplot",
+      "Version": "0.95",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "xCell": {
+      "Package": "xCell",
+      "Version": "1.1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "xCell",
+      "RemoteUsername": "dviraran"
+    }
+  }
+}
+
