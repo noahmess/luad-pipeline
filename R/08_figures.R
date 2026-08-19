@@ -180,6 +180,10 @@ draw_roc <- function() {
          col = roc_cols, lwd = 2, cex = 0.85, bty = "n")
 }
 save_base(draw_roc, "Figure6_ROC_Curves", 8, 7)
+# Persist the AUC values shown on the figure (computed in draw_roc) so the
+# 9 numbers are traceable without regenerating the image.
+write.csv(data.frame(gene = PANEL_9, AUC = auc_vals),
+          file.path(PATHS$tables, "Figure_ROC_AUC_9genes.csv"), row.names = FALSE)
 
 # ============================================================================
 # FIGURE 7 - Expression by tumour stage, four signature genes (n = 394)
