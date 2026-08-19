@@ -245,7 +245,7 @@ All data analysed in this study are publicly available.
 
 | Source | Accession / access | Used by | Cached at |
 |---|---|---|---|
-| TCGA-LUAD | NCI Genomic Data Commons (`TCGAbiolinks`) | `R/01`-`R/09`, `R/13` | `data/TCGA_LUAD_data.RData`, `data/TCGA_LUAD_cohort.RData` |
+| TCGA-LUAD | NCI Genomic Data Commons via `TCGAbiolinks` (STAR-Counts RNA-seq + clinical), **downloaded 30 May 2026** | `R/01`-`R/09`, `R/13` | `data/TCGA_LUAD_data.RData`, `data/TCGA_LUAD_cohort.RData` |
 | GSE31210 | NCBI GEO, Okayama et al. (2012) | `R/11`, `R/12` | `data/GEO_cache/GSE31210_eset.rds` |
 | GSE50081 | NCBI GEO, Der et al. (2014) | `R/11`, `R/12` | `data/GEO_cache/GSE50081_eset.rds` |
 | GSE72094 | NCBI GEO (442-patient lung adenocarcinoma cohort; consult the GEO record for the associated publication) | `R/15`, `R/16` | `data/GEO_cache/GSE72094_eset.rds` |
