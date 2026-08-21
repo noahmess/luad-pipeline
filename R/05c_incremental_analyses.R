@@ -87,12 +87,24 @@ cat(sprintf("\nAIC  Clinical only:    %.1f\n", AIC(cox_clin)))
 cat(sprintf("AIC  Clinical + ScoreA: %.1f  (lower = better)\n", AIC(cox_full)))
 cat(sprintf("Delta AIC:              %.1f\n", AIC(cox_clin) - AIC(cox_full)))
 
-# Score A HR in the full model
+# Score A HR in the full model (stage as ORDINAL, specific to this
+# incremental-value analysis).
 hr_sa <- exp(coef(cox_full)["scoreA"])
 ci_sa <- exp(confint(cox_full)["scoreA",])
 p_sa  <- summary(cox_full)$coefficients["scoreA", "Pr(>|z|)"]
 cat(sprintf("\nScore A in full model: HR = %.3f (%.3f - %.3f), p = %.4g\n",
             hr_sa, ci_sa[1], ci_sa[2], p_sa))
+
+# CANONICAL adjusted HR: stage as a FACTOR (I/II/III/IV), matching the main
+# survival analysis in R/05 and manuscript Table 3. This is the value the
+# manuscript reports (1.414); the ordinal-stage HR above (1.405) is a byproduct
+# of the incremental-value model and is not the headline adjusted HR.
+cox_full_f <- coxph(Surv(time, status) ~ age + sex + stage_f + scoreA, data = df)
+hr_sa_f <- exp(coef(cox_full_f)["scoreA"])
+ci_sa_f <- exp(confint(cox_full_f)["scoreA", ])
+p_sa_f  <- summary(cox_full_f)$coefficients["scoreA", "Pr(>|z|)"]
+cat(sprintf("Score A adjusted (stage FACTOR, canonical): HR = %.3f (%.3f - %.3f), p = %.4g\n",
+            hr_sa_f, ci_sa_f[1], ci_sa_f[2], p_sa_f))
 
 # =====================================================================
 # 2. STAGE I STRATIFICATION
@@ -194,7 +206,8 @@ cat("━━━━━━━━━━━━━━━━━━━━━━━━━
 summary_df <- data.frame(
   Analysis = c(
     "Score A univariate (n=394)",
-    "Score A adjusted age+sex+stage (n=394)",
+    "Score A adjusted age+sex+stage, stage FACTOR (canonical, matches Table 3) (n=394)",
+    "Score A adjusted age+sex+stage, stage ordinal (incremental-value model) (n=394)",
     "Score A in Stage I univariate",
     "Score A in Stage I adjusted age+sex",
     "LR test: clinical vs clinical+ScoreA",
@@ -206,6 +219,7 @@ summary_df <- data.frame(
     sprintf("HR=%.3f (%.3f-%.3f), p=%.4g", exp(coef(cox_scoreA)),
             exp(confint(cox_scoreA))[1], exp(confint(cox_scoreA))[2],
             summary(cox_scoreA)$coefficients[,"Pr(>|z|)"]),
+    sprintf("HR=%.3f (%.3f-%.3f), p=%.4g", hr_sa_f, ci_sa_f[1], ci_sa_f[2], p_sa_f),
     sprintf("HR=%.3f (%.3f-%.3f), p=%.4g", hr_sa, ci_sa[1], ci_sa[2], p_sa),
     sprintf("HR=%.3f (%.3f-%.3f), p=%.4g", hr_stI, ci_stI[1], ci_stI[2], p_stI),
     sprintf("HR=%.3f (%.3f-%.3f), p=%.4g", hr_stI_adj, ci_stI_adj[1], ci_stI_adj[2], p_stI_adj),
