@@ -1,6 +1,8 @@
-# Nuclear envelope remodelling in lung adenocarcinoma
+# Nuclear envelope dysregulation in lung adenocarcinoma
 
-Analysis pipeline supporting the manuscript *Nuclear envelope remodelling in lung adenocarcinoma: prognostic value of LMNB2, TMPO, NDC1 and LBR, and identification of NUP88 as a Ki-67-uncoupled transcript associated with reduced myeloid infiltration*.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22038847.svg)](https://doi.org/10.5281/zenodo.22038847)
+
+Analysis pipeline supporting the manuscript *Nuclear envelope dysregulation in lung adenocarcinoma: a Ki-67-uncoupled NUP88 profile negatively associated with immune infiltration*.
 
 This repository contains the R scripts and output tables needed to reproduce every figure, table and statistic reported in the paper, including the revision analyses (cross-signature benchmark, leave-one-gene-out sensitivity, random-signature permutation test, and the GSE72094 replication of the NUP88-immune correlation).
 
